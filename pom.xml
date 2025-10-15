@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.infoepoch.cmgs</groupId>
+    <artifactId>eaglemq</artifactId>
+    <version>${eagle.version}</version>
+
+    <packaging>pom</packaging>
+
+    <description>手写MQ</description>
+
+    <modules>
+        <!--  交换机模块  -->
+        <module>eagle-broker</module>
+    </modules>
+
+    <properties>
+        <eagle.version>1.0-SNAPSHOT</eagle.version>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <netty.version>4.1.68.Final</netty.version>
+        <fastJson.version>2.0.10</fastJson.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${fastJson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>${netty.version}</version>
+        </dependency>
+    </dependencies>
+</project>
