@@ -1,13 +1,16 @@
 package com.infoepoch.cmgs.cache;
 
 import com.infoepoch.cmgs.config.GlobalProperties;
-import com.infoepoch.cmgs.config.TopicInfo;
+import com.infoepoch.cmgs.model.EagleMqTopicModel;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class CommonCache {
 
-    public static GlobalProperties  globalProperties = new GlobalProperties();
+    public static GlobalProperties globalProperties = new GlobalProperties();
 
-    public static TopicInfo topicInfo = new TopicInfo();
+    public static Map<String, EagleMqTopicModel> topicModelMap = new HashMap<>();
 
     public static GlobalProperties getGlobalProperties() {
         return globalProperties;
@@ -17,11 +20,11 @@ public class CommonCache {
         CommonCache.globalProperties = globalProperties;
     }
 
-    public static TopicInfo getTopicInfo() {
-        return topicInfo;
+    public static Map<String, EagleMqTopicModel> getTopicModelMap() {
+        return topicModelMap;
     }
 
-    public static void setTopicInfo(TopicInfo topicInfo) {
-        CommonCache.topicInfo = topicInfo;
+    public static void setTopicModelMap(Map<String, EagleMqTopicModel> topicModelMap) {
+        CommonCache.topicModelMap = topicModelMap;
     }
 }
