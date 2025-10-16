@@ -7,4 +7,6 @@ public class BrokerConstants {
     public static final String BASE_PATH = "/broker/store/";
 
     public static final int MMAP_SIZE = 1024 * 1024;    // 1mb
+
+    public static final int DEFAULT_TIME_STAMP = 3;
 }

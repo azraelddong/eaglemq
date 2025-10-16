@@ -35,7 +35,7 @@ public class CommitLogAppendHandler {
         if (model == null) {
             throw new RuntimeException("invalid topic " + topic);
         }
-        byte[] msg = model.read(0, 10);
+        byte[] msg = model.read(0, 1000);
         System.out.println(new String(msg));
     }
 }

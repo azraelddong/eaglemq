@@ -6,6 +6,9 @@ import com.infoepoch.cmgs.model.CommitLogMessageModel;
 import com.infoepoch.cmgs.model.CommitLogModel;
 import com.infoepoch.cmgs.model.EagleMqTopicModel;
 import com.infoepoch.cmgs.utils.CommitLogFileNameUtil;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import sun.nio.ch.FileChannelImpl;
 
 import java.io.File;
@@ -15,6 +18,11 @@ import java.io.RandomAccessFile;
 import java.lang.reflect.Method;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import static com.infoepoch.cmgs.utils.CommitLogFileNameUtil.appendCommitLogFilePath;
 
 public class MMapFileModel {
 
@@ -25,6 +33,8 @@ public class MMapFileModel {
     private FileChannel fileChannel;
 
     private String topicName;
+
+    private Lock lock;
 
     /**
      * 加载文件
@@ -37,6 +47,7 @@ public class MMapFileModel {
     public void load(String topic, int startOffset, int mappedSize) throws IOException {
         String filePath = getLatestCommitLogFilePath(topic);
         this.topicName = topic;
+        this.lock = new ReentrantLock();
         doMmap(filePath, startOffset, mappedSize);
     }
 
@@ -62,11 +73,12 @@ public class MMapFileModel {
 
         String filePath = null;
         // 判断当前offset是否超过了offset限制
-        long diff = commitLog.getOffset() - commitLog.getOffsetLimit();
+        long diff = commitLog.countDiff();
         if (diff == 0) {
             // 创建新commitLog文件
-            filePath = createNewCommitLogFile(topic, commitLog);
-        } else if (diff < 0) {
+            CommitLogFilePath commitLogFilePath = createNewCommitLogFile(topic, commitLog);
+            filePath = commitLogFilePath.getFilePath();
+        } else if (diff > 0) {
             filePath = appendCommitLogFilePath(topic, commitLog.getFileName());
         }
 
@@ -80,31 +92,18 @@ public class MMapFileModel {
      * @param commitLog commitLog对象
      * @return 新commitLog文件路径
      */
-    private String createNewCommitLogFile(String topic, CommitLogModel commitLog) {
-        String newFilePath = appendCommitLogFilePath(topic,
-                CommitLogFileNameUtil.incrCommitLogFileName(commitLog.getFileName()));
+    private CommitLogFilePath createNewCommitLogFile(String topic, CommitLogModel commitLog) {
+        String newFileName = CommitLogFileNameUtil.incrCommitLogFileName(commitLog.getFileName());
+        String newFilePath = appendCommitLogFilePath(topic, newFileName);
 
         File file = new File(newFilePath);
         try {
             file.createNewFile();
+            System.out.println("==========> 创建了一个新的文件");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return newFilePath;
-    }
-
-    /**
-     * 拼接commitLog文件路径
-     *
-     * @param topic    主题
-     * @param fileName commitLog文件名称
-     * @return commitLog路径
-     */
-    private String appendCommitLogFilePath(String topic, String fileName) {
-        return CommonCache.getGlobalProperties().getEagleMqHome()
-                + BrokerConstants.BASE_PATH
-                + topic
-                + fileName;
+        return new CommitLogFilePath(newFileName, newFilePath);
     }
 
     /**
@@ -143,14 +142,33 @@ public class MMapFileModel {
         // 如何管理topic的最新写入offset值，定时刷盘操作
         // 线程安全问题：多线程更改offset？顺序问题？
 
+        EagleMqTopicModel eagleMqTopicModel = CommonCache.getTopicModelMap().get(this.topicName);
+        if (eagleMqTopicModel == null) {
+            throw new IllegalArgumentException("eagleMqTopicModel is null");
+        }
+        CommitLogModel commitLog = eagleMqTopicModel.getCommitLog();
+        if (commitLog == null) {
+            throw new IllegalArgumentException("commitLog is null");
+        }
+
         // 校验commitLog文件剩余容量是否够存储？
         validateCommitLogSpace(commitLogMessageModel);
 
         // 将消息大小4个字节放在内容最前面
-        this.mappedByteBuffer.put(commitLogMessageModel.convertToBytes());
-        if (isForce) {
-            this.mappedByteBuffer.force();  // 强制刷盘数据
+        byte[] writeContent = commitLogMessageModel.convertToBytes();
+        lock.lock();
+        try {
+            this.mappedByteBuffer.put(writeContent);
+            commitLog.getOffset().addAndGet(writeContent.length);
+            if (isForce) {
+                this.mappedByteBuffer.force();  // 强制刷盘数据
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            lock.unlock();
         }
+
     }
 
     /**
@@ -159,12 +177,17 @@ public class MMapFileModel {
     private void validateCommitLogSpace(CommitLogMessageModel commitLogMessageModel) throws IOException {
         EagleMqTopicModel eagleMqTopicModel = CommonCache.getTopicModelMap().get(this.topicName);
         CommitLogModel commitLog = eagleMqTopicModel.getCommitLog();
-        long leftSpace = commitLog.getOffsetLimit() - commitLog.getOffset();
-        if (leftSpace < commitLogMessageModel.getSize()) {
+        if (commitLog.countDiff() < commitLogMessageModel.getSize()) {
             // 剩余空间放不下，创建新的commitLog文件
-            String newCommitLogFile = createNewCommitLogFile(this.topicName, commitLog);
+            CommitLogFilePath commitLogFilePath = createNewCommitLogFile(this.topicName, commitLog);
+
+            // 重置commitLog文件
+            commitLog.setOffset(new AtomicInteger(0));
+            commitLog.setOffsetLimit((long) BrokerConstants.MMAP_SIZE);
+            commitLog.setFileName(commitLogFilePath.getFileName());
+
             // 将文件映射出去
-            doMmap(newCommitLogFile, 0, BrokerConstants.MMAP_SIZE);
+            doMmap(commitLogFilePath.getFilePath(), 0, BrokerConstants.MMAP_SIZE);
         }
     }
 
@@ -175,5 +198,13 @@ public class MMapFileModel {
         Method method = FileChannelImpl.class.getDeclaredMethod("unmap", MappedByteBuffer.class);
         method.setAccessible(true);
         method.invoke(FileChannelImpl.class, this.mappedByteBuffer);
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    static class CommitLogFilePath {
+        private String fileName;
+        private String filePath;
     }
 }

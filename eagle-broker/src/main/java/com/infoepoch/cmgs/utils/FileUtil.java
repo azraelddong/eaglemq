@@ -1,11 +1,6 @@
 package com.infoepoch.cmgs.utils;
 
-import com.alibaba.fastjson.JSON;
-import com.infoepoch.cmgs.model.EagleMqTopicModel;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.util.List;
+import java.io.*;
 
 /**
  * 文件相关工具类
@@ -25,9 +20,12 @@ public class FileUtil {
         }
     }
 
-    public static void main(String[] args) {
-        String content = read("/Users/apple/Documents/study/eaglemq/broker/config/eaglemq-topic.json");
-        List<EagleMqTopicModel> models = JSON.parseArray(content, EagleMqTopicModel.class);
-        System.out.println(models);
+    public static void write(String path, String content) {
+        try (FileWriter fw = new FileWriter(path)) {
+            fw.write(content);
+            fw.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }

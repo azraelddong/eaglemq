@@ -1,11 +1,28 @@
 package com.infoepoch.cmgs.utils;
 
+import com.infoepoch.cmgs.cache.CommonCache;
+import com.infoepoch.cmgs.constants.BrokerConstants;
 import io.netty.util.internal.StringUtil;
 
 /**
  * commitLog 文件名称生成工具类
  */
 public class CommitLogFileNameUtil {
+
+    /**
+     * 拼接commitLog文件路径
+     *
+     * @param topic    主题
+     * @param fileName commitLog文件名称
+     * @return commitLog路径
+     */
+    public static String appendCommitLogFilePath(String topic, String fileName) {
+        return CommonCache.getGlobalProperties().getEagleMqHome()
+                + BrokerConstants.BASE_PATH
+                + topic
+                + "/"
+                + fileName;
+    }
 
     /**
      * 构建初始commitLog文件名称

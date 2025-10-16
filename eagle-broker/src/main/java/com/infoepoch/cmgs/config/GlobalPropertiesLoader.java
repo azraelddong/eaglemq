@@ -10,7 +10,8 @@ public class GlobalPropertiesLoader {
     public void load() {
         GlobalProperties globalProperties = new GlobalProperties();
 //        String mqHome = System.getenv(BrokerConstants.EAGLE_MQ_HOME);
-        String mqHome = "/Users/apple/Documents/study/eaglemq";
+//        String mqHome = "/Users/apple/Documents/study/eaglemq";
+        String mqHome = "E:\\study\\eaglemq";
         if (StringUtil.isNullOrEmpty(mqHome)) {
             throw new IllegalArgumentException("EAGLE_MQ_HOME is not set");
         }

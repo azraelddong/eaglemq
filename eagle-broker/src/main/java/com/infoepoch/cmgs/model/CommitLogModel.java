@@ -2,6 +2,8 @@ package com.infoepoch.cmgs.model;
 
 import lombok.Data;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 @Data
 public class CommitLogModel {
     /**
@@ -11,9 +13,13 @@ public class CommitLogModel {
     /**
      * 最新的offset值
      */
-    private Long offset;
+    private AtomicInteger offset;
     /**
      * commitLog文件偏移量限制的容量
      */
     private Long offsetLimit;
+
+    public Long countDiff() {
+        return this.offsetLimit - this.offset.get();
+    }
 }

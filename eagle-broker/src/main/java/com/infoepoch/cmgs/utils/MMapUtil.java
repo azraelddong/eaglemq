@@ -13,8 +13,6 @@ import java.nio.channels.FileChannel;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Objects;
-import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 
 /**
  * mmap内存映射工具类
@@ -125,20 +123,5 @@ public class MMapUtil {
         } catch (NoSuchMethodException e) {
             return target.getClass().getDeclaredMethod(methodName, args);
         }
-    }
-
-    /**
-     * 测试映射内存是否释放
-     */
-    public static void main(String[] args) throws Exception {
-        Scanner scanner = new Scanner(System.in);
-        long size = scanner.nextLong();
-        MMapUtil mm = new MMapUtil();
-        mm.load("/Users/apple/Documents/study/eaglemq/broker/store/order_cancel_topic/00000000", 0, (int) (size * 1024 * 1024));
-        System.out.println("映射了" + size + "m的空间");
-        TimeUnit.SECONDS.sleep(5);
-        System.out.println("释放内存");
-        mm.clean();
-        TimeUnit.SECONDS.sleep(100000);
     }
 }

@@ -17,13 +17,4 @@ public class ByteConvertUtil {
                 | ((src[2] << 16) & 0xFF0000)
                 | ((src[3] << 24) & 0xFF000000);
     }
-
-    public static void main(String[] args) {
-        int i = 10;
-        byte[] content = intToByteArray(i);
-        System.out.println(content.length); // 4
-
-        int result = byteArrayToInt(content);
-        System.out.println(result); //100
-    }
 }
