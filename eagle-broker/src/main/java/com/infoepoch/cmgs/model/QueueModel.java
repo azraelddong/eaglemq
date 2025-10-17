@@ -2,14 +2,22 @@ package com.infoepoch.cmgs.model;
 
 import lombok.Data;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 @Data
 public class QueueModel {
 
     private Integer id;
 
-    private Long minOffset;
+    private String fileName;
 
-    private Long currentOffset;
+    private int offsetLimit;
 
-    private Long maxOffset;
+    private AtomicInteger latestOffset;
+
+    private int lastOffset;
+
+    public int getDiff() {
+        return this.offsetLimit - this.latestOffset.get();
+    }
 }

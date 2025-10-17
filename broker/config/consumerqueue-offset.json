@@ -1,0 +1,11 @@
+{
+  "offsetTable": {
+    "order_cancel_topic": {
+      "order_service_group": {
+        "0": "00000000#23",
+        "1": "00000001#33",
+        "3": "00000002#44"
+      }
+    }
+  }
+}

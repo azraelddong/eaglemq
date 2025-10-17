@@ -7,7 +7,7 @@ import io.netty.util.internal.StringUtil;
 /**
  * commitLog 文件名称生成工具类
  */
-public class CommitLogFileNameUtil {
+public class LogFileNameUtil {
 
     /**
      * 拼接commitLog文件路径
@@ -18,9 +18,27 @@ public class CommitLogFileNameUtil {
      */
     public static String appendCommitLogFilePath(String topic, String fileName) {
         return CommonCache.getGlobalProperties().getEagleMqHome()
-                + BrokerConstants.BASE_PATH
+                + BrokerConstants.BASE_TOPIC_PATH
                 + topic
-                + "/"
+                + BrokerConstants.FILE_SEPARATE
+                + fileName;
+    }
+
+    /**
+     * 拼接consumerQueueOffset文件路径
+     *
+     * @param topic    主题
+     * @param queueId  队列id
+     * @param fileName 文件名称
+     * @return consumerQueueOffset文件路径
+     */
+    public static String appendConsumerQueueOffsetFilePath(String topic, Integer queueId, String fileName) {
+        return CommonCache.getGlobalProperties().getEagleMqHome()
+                + BrokerConstants.BASE_CONSUMER_QUEUE_PATH
+                + topic
+                + BrokerConstants.FILE_SEPARATE
+                + queueId
+                + BrokerConstants.FILE_SEPARATE
                 + fileName;
     }
 

@@ -1,1 +1,29 @@
-[{"commitLog":{"fileName":"00000000","offset":0,"offsetLimit":100000},"createTime":1760574700000,"queueList":[{"currentOffset":20,"id":1,"maxOffset":100,"minOffset":10},{"currentOffset":40,"id":2,"maxOffset":200,"minOffset":20}],"topic":"order_cancel_topic","updateTime":1760574700000}]
+[
+  {
+    "commitLog": {
+      "fileName": "00000001",
+      "offset": 169848,
+      "offsetLimit": 1048576
+    },
+    "createTime": 1760574700000,
+    "queueSize": 3,
+    "queueList": [
+      {
+        "id": 1,
+        "fileName": 0,
+        "offsetLimit": 10000,
+        "latestOffset": 100,
+        "lastOffset": 10
+      },
+      {
+        "id": 2,
+        "fileName": 0,
+        "offsetLimit": 10000,
+        "latestOffset": 200,
+        "lastOffset": 20
+      }
+    ],
+    "topic": "order_cancel_topic",
+    "updateTime": 1760574700000
+  }
+]

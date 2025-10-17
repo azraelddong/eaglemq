@@ -1,19 +1,16 @@
 package com.infoepoch.cmgs.config;
 
+
 import com.alibaba.fastjson.JSON;
 import com.infoepoch.cmgs.cache.CommonCache;
 import com.infoepoch.cmgs.constants.BrokerConstants;
-import com.infoepoch.cmgs.model.EagleMqTopicModel;
+import com.infoepoch.cmgs.model.ConsumerQueueOffsetModel;
 import com.infoepoch.cmgs.utils.FileUtil;
 import io.netty.util.internal.StringUtil;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-/**
- * 启动加载mq主配置到内存
- */
-public class EagleMqTopicLoader {
+public class ConsumerQueueOffsetLoader {
 
     private String filePath;
 
@@ -23,25 +20,24 @@ public class EagleMqTopicLoader {
         if (StringUtil.isNullOrEmpty(basePath)) {
             throw new IllegalArgumentException("eagle mq home is invalid");
         }
-        filePath = basePath + "/broker/config/eaglemq-topic.json";
+        filePath = basePath + "/broker/config/consumerqueue-offset.json";
         String content = FileUtil.read(filePath);
-        List<EagleMqTopicModel> models = JSON.parseArray(content, EagleMqTopicModel.class);
-        CommonCache.setTopicModelList(models);
+        ConsumerQueueOffsetModel consumerQueueModel = JSON.parseObject(content, ConsumerQueueOffsetModel.class);
+        CommonCache.setConsumerQueueModel(consumerQueueModel);
     }
 
     /**
      * 开启一个线程任务
      */
-    public void eagleMqTopicInfoTask() {
+    public void consumerQueueOffsetTask() {
         // 异步线程
-        // 每隔15s将内存中的配置刷新到磁盘中
-        CommonThreadPoolConfig.refreshTopicInfoExecutor.execute(() -> {
+        CommonThreadPoolConfig.refreshConsumerQueueOffsetExecutor.execute(() -> {
             while (true) {
                 try {
-                    TimeUnit.SECONDS.sleep(BrokerConstants.REFRESH_TOPIC_INFO_TIME_STAMP);
-                    System.out.println("========>开始刷新磁盘");
-                    List<EagleMqTopicModel> topicModelList = CommonCache.getTopicModelList();
-                    FileUtil.write(filePath, JSON.toJSONString(topicModelList));
+                    TimeUnit.SECONDS.sleep(BrokerConstants.REFRESH_CONSUMER_QUEUE_OFFSET_TIME_STAMP);
+                    System.out.println("========>consumer queue offset 配置信息刷新到磁盘");
+                    ConsumerQueueOffsetModel consumerQueueOffsetModel = CommonCache.getConsumerQueueModel();
+                    FileUtil.write(filePath, JSON.toJSONString(consumerQueueOffsetModel));
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
