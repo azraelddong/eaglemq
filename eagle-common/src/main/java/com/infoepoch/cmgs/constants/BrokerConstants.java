@@ -16,4 +16,5 @@ public class BrokerConstants {
 
     public static final int REFRESH_CONSUMER_QUEUE_OFFSET_TIME_STAMP = 3;
 
+    public static final short DEFAULT_MAGIC_NUM = 1781;
 }

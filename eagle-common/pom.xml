@@ -7,16 +7,21 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>eagle-broker</artifactId>
+    <artifactId>eagle-common</artifactId>
     <packaging>jar</packaging>
 
+    <name>eagle-common</name>
+    <url>http://maven.apache.org</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
     <dependencies>
         <dependency>
-            <groupId>com.infoepoch.cmgs</groupId>
-            <artifactId>eagle-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>33.0.0-jre</version>
         </dependency>
     </dependencies>
-
 </project>

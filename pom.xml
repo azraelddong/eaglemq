@@ -13,6 +13,8 @@
     <modules>
         <!--  交换机模块  -->
         <module>eagle-broker</module>
+        <module>eagle-common</module>
+        <module>eagle-nameserver</module>
     </modules>
 
     <properties>
