@@ -16,14 +16,14 @@ public class ConsumerQueueOffsetModel {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    private class OffsetTable {
+    public static class OffsetTable {
         private Map<String, ConsumerGroup> topicConsumerGroup;
+    }
 
-        @Data
-        @NoArgsConstructor
-        @AllArgsConstructor
-        private class ConsumerGroup {
-            private Map<String, Map<String, String>> consumerGroup;
-        }
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ConsumerGroup {
+        private Map<String, Map<String, String>> consumerGroup;
     }
 }

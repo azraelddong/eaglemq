@@ -2,6 +2,7 @@ package com.infoepoch.cmgs.cache;
 
 import com.infoepoch.cmgs.config.GlobalProperties;
 import com.infoepoch.cmgs.core.ConsumerQueueOffsetMMapFileModelManager;
+import com.infoepoch.cmgs.core.MMapFileModelManager;
 import com.infoepoch.cmgs.model.ConsumerQueueOffsetModel;
 import com.infoepoch.cmgs.model.EagleMqTopicModel;
 
@@ -24,6 +25,16 @@ public class CommonCache {
      * 主题模型
      */
     public static List<EagleMqTopicModel> topicModelList = new ArrayList<>();
+
+    public static MMapFileModelManager mMapFileModelManager = new MMapFileModelManager();
+
+    public static MMapFileModelManager getmMapFileModelManager() {
+        return mMapFileModelManager;
+    }
+
+    public static void setmMapFileModelManager(MMapFileModelManager mMapFileModelManager) {
+        CommonCache.mMapFileModelManager = mMapFileModelManager;
+    }
 
     /**
      * 消费者队列模型

@@ -1,28 +1,30 @@
 [
   {
     "commitLog": {
-      "fileName": "00000001",
-      "offset": 169848,
+      "fileName": "00000000",
+      "offset": 171,
       "offsetLimit": 1048576
     },
     "createTime": 1760574700000,
-    "queueSize": 3,
     "queueList": [
       {
-        "id": 1,
-        "fileName": 0,
-        "offsetLimit": 10000,
-        "latestOffset": 100,
-        "lastOffset": 10
+        "diff": 9892,
+        "fileName": "00000000",
+        "id": 0,
+        "lastOffset": 0,
+        "latestOffset": 108,
+        "offsetLimit": 10000
       },
       {
-        "id": 2,
-        "fileName": 0,
-        "offsetLimit": 10000,
-        "latestOffset": 200,
-        "lastOffset": 20
+        "diff": 10000,
+        "fileName": "00000000",
+        "id": 1,
+        "lastOffset": 0,
+        "latestOffset": 0,
+        "offsetLimit": 10000
       }
     ],
+    "queueSize": 2,
     "topic": "order_cancel_topic",
     "updateTime": 1760574700000
   }

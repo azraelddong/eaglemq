@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Objects;
@@ -22,6 +23,8 @@ public class ConsumerQueueOffsetMMapFileModel {
     private File file;
 
     private MappedByteBuffer mappedByteBuffer;
+
+    private ByteBuffer readBuffer;
 
     private FileChannel fileChannel;
 
@@ -57,6 +60,7 @@ public class ConsumerQueueOffsetMMapFileModel {
         }
         this.fileChannel = new RandomAccessFile(this.file, "rw").getChannel();
         this.mappedByteBuffer = this.fileChannel.map(FileChannel.MapMode.READ_WRITE, startOffset, mappedSize);
+        this.readBuffer = this.mappedByteBuffer.slice();
     }
 
     /**
@@ -123,5 +127,19 @@ public class ConsumerQueueOffsetMMapFileModel {
         } finally {
             lock.unlock();
         }
+    }
+
+    /**
+     * 读取
+     * @param pos 定位
+     * @return
+     */
+    public byte[] read(int pos) {
+        // slice：开启一个窗口
+        ByteBuffer buffer = this.readBuffer.slice();
+        buffer.position(pos);
+        byte[] content = new byte[12];
+        buffer.get(content);
+        return content;
     }
 }

@@ -1,5 +1,6 @@
 package com.infoepoch.cmgs.core;
 
+import com.infoepoch.cmgs.cache.CommonCache;
 import com.infoepoch.cmgs.constants.BrokerConstants;
 import com.infoepoch.cmgs.model.CommitLogMessageModel;
 
@@ -10,12 +11,10 @@ import java.io.IOException;
  */
 public class CommitLogAppendHandler {
 
-    private MMapFileModelManager modelManager = new MMapFileModelManager();
-
     public void prepareLoading(String topic) throws IOException {
         MMapFileModel model = new MMapFileModel();
         model.load(topic, 0, BrokerConstants.MMAP_SIZE);
-        modelManager.put(topic, model);
+        CommonCache.getmMapFileModelManager().put(topic, model);
     }
 
     public void append(String topic, byte[] content) throws IOException {
@@ -23,7 +22,7 @@ public class CommitLogAppendHandler {
     }
 
     public void prepare(String topic, byte[] content) throws IOException {
-        MMapFileModel model = modelManager.get(topic);
+        MMapFileModel model = CommonCache.getmMapFileModelManager().get(topic);
         if (model == null) {
             throw new RuntimeException("invalid topic " + topic);
         }
@@ -31,7 +30,7 @@ public class CommitLogAppendHandler {
     }
 
     public void read(String topic) {
-        MMapFileModel model = modelManager.get(topic);
+        MMapFileModel model = CommonCache.getmMapFileModelManager().get(topic);
         if (model == null) {
             throw new RuntimeException("invalid topic " + topic);
         }

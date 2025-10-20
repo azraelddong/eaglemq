@@ -1,5 +1,6 @@
 package com.infoepoch.cmgs.core;
 
+import com.alibaba.fastjson.JSON;
 import com.infoepoch.cmgs.cache.CommonCache;
 import com.infoepoch.cmgs.constants.BrokerConstants;
 import com.infoepoch.cmgs.model.CommitLogMessageModel;
@@ -190,8 +191,10 @@ public class MMapFileModel {
                         Integer.parseInt(commitLog.getFileName()),
                         offset,
                         msgLength);
+        System.out.println("========> 写入consumerQueueModel内容：" + JSON.toJSONString(consumerQueueModel));
 
         byte[] content = consumerQueueModel.convertToBytes();
+        System.out.println("==========> 写入内容：" + JSON.toJSONString(consumerQueueModel.convertToModel(content)));
 
         //todo: 后期优化，暂时写死
         int queueId = 0;
