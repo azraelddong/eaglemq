@@ -13,4 +13,8 @@ public abstract class Event {
     private long timeStamp;
 
     private ChannelHandlerContext ctx;
+
+    private String brokerIp;
+
+    private Integer brokerPort;
 }

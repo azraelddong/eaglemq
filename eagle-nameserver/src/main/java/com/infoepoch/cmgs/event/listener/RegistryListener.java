@@ -10,6 +10,9 @@ import io.netty.util.AttributeKey;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * 注册监听器
+ */
 public class RegistryListener implements Listener<RegistryEvent> {
 
     @Override
@@ -29,6 +32,7 @@ public class RegistryListener implements Listener<RegistryEvent> {
             throw new IllegalArgumentException("error username or password");
         }
 
+        // 添加一个验证属性
         ctx.attr(AttributeKey.valueOf("reqId")).set(UUID.randomUUID().toString());
     }
 }

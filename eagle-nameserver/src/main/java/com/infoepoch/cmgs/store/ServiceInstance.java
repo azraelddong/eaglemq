@@ -14,11 +14,11 @@ public class ServiceInstance {
 
     private String brokerIp;
 
-    private int brokerPort;
+    private Integer brokerPort;
 
-    private long firstRegistrationTime;
+    private Long firstRegistrationTime;
 
-    private long lastRegistrationTime;
+    private Long lastRegistrationTime;
 
     private Map<String, String> attrs = new HashMap<>();
 }

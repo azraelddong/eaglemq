@@ -66,9 +66,4 @@ public class EventBus {
             }
         });
     }
-
-    public static void main(String[] args) {
-        EventBus eventBus = new EventBus();
-        eventBus.init();
-    }
 }

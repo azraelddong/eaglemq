@@ -2,6 +2,7 @@ package com.infoepoch.cmgs.core;
 
 import com.infoepoch.cmgs.coder.DecoderHandler;
 import com.infoepoch.cmgs.coder.EncoderHandler;
+import com.infoepoch.cmgs.event.EventBus;
 import com.infoepoch.cmgs.handler.TcpNettyServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -34,7 +35,9 @@ public class NameServerStarter {
                     protected void initChannel(SocketChannel ch) throws Exception {
                         ch.pipeline().addLast(new DecoderHandler());
                         ch.pipeline().addLast(new EncoderHandler());
-                        ch.pipeline().addLast(new TcpNettyServerHandler());
+                        EventBus eventBus = new EventBus();
+                        eventBus.init();
+                        ch.pipeline().addLast(new TcpNettyServerHandler(eventBus));
                     }
                 });
 
