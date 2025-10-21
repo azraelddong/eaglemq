@@ -2,7 +2,9 @@ package com.infoepoch.cmgs.constants;
 
 public class BrokerConstants {
 
-    public static final String EAGLE_MQ_HOME = "eaglemq";
+    public static final String EAGLE_MQ_HOME = "eaglemq_home";
+
+    public static final String BROKER_PROPERTIES_HOME = "/broker/config/broker.properties";
 
     public static final String BASE_TOPIC_PATH = "/broker/store/";
 

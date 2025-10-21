@@ -10,7 +10,6 @@ import com.infoepoch.cmgs.core.ConsumerQueueConsumeHandler;
 import com.infoepoch.cmgs.model.EagleMqTopicModel;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 public class BrokerApplication {
 
@@ -54,20 +53,26 @@ public class BrokerApplication {
         }
     }
 
+    public static void startClient() throws InterruptedException {
+        CommonCache.getNameServerClient().init();
+    }
+
     public static void main(String[] args) throws IOException, InterruptedException {
         // 加载配置，缓存对象
         init();
+        // 启动netty客户端
+        startClient();
         // 初始化文件映射
-        String topic = "order_cancel_topic";
-        String group = "order_service_group";
-        for (int i = 0; i < 10; i++) {
-            byte[] consume = consumerQueueConsumeHandler.consume(topic, group, 0);
-            System.out.println("内容：" + new String(consume));
-            consumerQueueConsumeHandler.ack(topic, group, 0);
-//            System.out.println("===========> 写入数据");
-//            commitLogAppendHandler.append(topic, ("this is a test" + i).getBytes());
-            TimeUnit.SECONDS.sleep(1);
-        }
-//        commitLogAppendHandler.read(topic);
+//        String topic = "order_cancel_topic";
+//        String group = "order_service_group";
+//        for (int i = 0; i < 10; i++) {
+//            byte[] consume = consumerQueueConsumeHandler.consume(topic, group, 0);
+//            System.out.println("内容：" + new String(consume));
+//            consumerQueueConsumeHandler.ack(topic, group, 0);
+////            System.out.println("===========> 写入数据");
+////            commitLogAppendHandler.append(topic, ("this is a test" + i).getBytes());
+//            TimeUnit.SECONDS.sleep(1);
+//        }
+////        commitLogAppendHandler.read(topic);
     }
 }

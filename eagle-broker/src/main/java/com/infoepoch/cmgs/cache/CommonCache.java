@@ -5,6 +5,7 @@ import com.infoepoch.cmgs.core.ConsumerQueueOffsetMMapFileModelManager;
 import com.infoepoch.cmgs.core.MMapFileModelManager;
 import com.infoepoch.cmgs.model.ConsumerQueueOffsetModel;
 import com.infoepoch.cmgs.model.EagleMqTopicModel;
+import com.infoepoch.cmgs.netty.NameServerClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,17 @@ public class CommonCache {
     public static List<EagleMqTopicModel> topicModelList = new ArrayList<>();
 
     public static MMapFileModelManager mMapFileModelManager = new MMapFileModelManager();
+
+
+    public static NameServerClient nameServerClient = new NameServerClient();
+
+    public static NameServerClient getNameServerClient() {
+        return nameServerClient;
+    }
+
+    public static void setNameServerClient(NameServerClient nameServerClient) {
+        CommonCache.nameServerClient = nameServerClient;
+    }
 
     public static MMapFileModelManager getmMapFileModelManager() {
         return mMapFileModelManager;
